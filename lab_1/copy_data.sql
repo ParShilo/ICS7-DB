@@ -1,0 +1,6 @@
+\copy star_cluster(name, coord_x, coord_y, coord_z, cluster_type, parent_cluster_id) FROM '/docker-entrypoint-initdb.d/lab_1/star_cluster.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
+\copy planet(name, radius, coord_x, coord_y, atmosphere_type, cluster_id) FROM '/docker-entrypoint-initdb.d/lab_1/planet.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
+\copy spaceport(name, coord_x, coord_y, ship_capacity, planet_id) FROM '/docker-entrypoint-initdb.d/lab_1/spaceport.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
+\copy spaceship(name, registration_number, capacity, model, max_speed) FROM '/docker-entrypoint-initdb.d/lab_1/spaceship.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
+\copy person(full_name, birth_date, race, passport_code, home_planet) FROM '/docker-entrypoint-initdb.d/lab_1/person.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');
+\copy flight_arrival(person_id, spaceship_id, spaceport_id, flight_number, arrival_datetime, seat_number, purpose_of_visit) FROM '/docker-entrypoint-initdb.d/lab_1/flight_arrival.csv' WITH (FORMAT csv, HEADER true, DELIMITER ',');

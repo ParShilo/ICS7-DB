@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  postgres_db:
+    image: postgres:16-alpine
+    container_name: space_db_container
+    restart: always
+    environment:
+      POSTGRES_DB: space_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./lab_1/tables.sql:/docker-entrypoint-initdb.d/01_tables.sql
+      - ./lab_1/constraints.sql:/docker-entrypoint-initdb.d/02_constraints.sql
+      
+      - ./lab_1:/docker-entrypoint-initdb.d/lab_1
+      - ./lab_2:/docker-entrypoint-initdb.d/lab_2
+      - ./lab_3:/docker-entrypoint-initdb.d/lab_3
+      
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
