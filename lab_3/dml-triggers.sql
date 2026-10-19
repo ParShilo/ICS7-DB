@@ -40,14 +40,7 @@ CREATE OR REPLACE FUNCTION insert_instead_of_spaceship_view()
 RETURNS TRIGGER AS $$
 BEGIN
     INSERT INTO spaceship (name, model, capacity, registration_number, max_speed)
-    VALUES (
-        NEW.name, 
-        NEW.model, 
-        COALESCE(NEW.capacity, 0), 
-        'REG-' || FLOOR(RANDOM() * 899999 + 100000)::TEXT,
-        1000.00
-    );
-    
+    VALUES (NEW.name,  NEW.model, COALESCE(NEW.capacity, 0), 'REG-' || FLOOR(RANDOM() * 899999 + 100000)::TEXT, 1000.00);
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;

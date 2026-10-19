@@ -50,6 +50,34 @@ $$;
 CALL add_flight_arrival('FL-101', 1, 1, 1, CURRENT_TIMESTAMP::timestamp, '12B', 'Деловая поездка');
 
 
+-- на вход космопорт, процент прилётов с целью визита
+CREATE OR REPLACE PROCEDURE get_tyrism(p_spaceport_id INT8)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_turism INT;
+    all_flights INT;
+    precent NUMERIC;
+BEGIN
+    select count(*) into v_turism
+    from spaceport SP
+    left join flight_arrival FA ON SP.spaceport_id = FA.spaceport_id
+    where TRIM(purpose_of_visit) ILIKE TRIM('Туризм') AND SP.spaceport_id = p_spaceport_id;
+    
+    select count(*) into all_flights
+    from spaceport SP
+    left join flight_arrival FA ON SP.spaceport_id = FA.spaceport_id
+    where SP.spaceport_id = p_spaceport_id;
+    
+    
+    select v_turism / all_flights into precent;
+    
+    RAISE NOTICE 'Процент %', precent;
+END;
+$$;
+
+call get_tyrism(362);
+
 --2
 CREATE OR REPLACE PROCEDURE print_cluster_tree(p_root_id INT8)
 LANGUAGE plpgsql
@@ -78,7 +106,6 @@ BEGIN
     END LOOP;
 END;
 $$;
-
 
 CALL print_cluster_tree(2);
 
@@ -119,6 +146,27 @@ $$;
 
 CALL increase_spaceship_capacity(10.0);
 
+
+/*
+CREATE OR REPLACE PROCEDURE cancel_flight(p_flight_number VARCHAR)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- Выполняем удаление по номеру рейса
+    DELETE FROM flight_arrival
+    WHERE flight_number = p_flight_number;
+
+    -- Проверяем системную переменную FOUND
+    -- Она автоматически становится TRUE, если DELETE затронул хотя бы одну строку
+    IF FOUND THEN
+        RAISE NOTICE 'Рейс % успешно отменен', p_flight_number;
+    ELSE
+        -- Если FOUND = FALSE, значит ни одна строка не была удалена
+        RAISE NOTICE 'Рейс % не найден, отменять нечего', p_flight_number;
+    END IF;
+END;
+$$;
+*/
 
 --4 
 CREATE OR REPLACE PROCEDURE get_schema_metadata(p_schema_name VARCHAR DEFAULT 'public')

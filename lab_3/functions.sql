@@ -19,8 +19,30 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-SELECT get_person_age(1) AS person_age;
+SELECT get_person_age(15) AS person_age;
 
+--
+/*
+CREATE OR REPLACE FUNCTION get_most_active_spaceport()
+RETURNS VARCHAR AS $$
+DECLARE
+    v_name VARCHAR;
+BEGIN
+    SELECT SP.name into v_name
+    FROM flight_arrival FA
+    LEFT JOIN spaceport SP ON FA.spaceport_id = SP.spaceport_id
+    GROUP BY SP.spaceport_id
+    ORDER BY COUNT(FA.arrival_id) DESC
+    limit 1;
+    
+    if v_name is NULL then
+    	return -1;
+    end if;
+    return v_name;
+END;
+$$ LANGUAGE plpgsql;
+*/
+--
 
 -- 2
 CREATE OR REPLACE FUNCTION get_spaceships_by_model(p_model VARCHAR)
@@ -71,6 +93,13 @@ SELECT *
 FROM get_spaceport_stats();
 
 
+
+
+
+
+
+
+
 --4
 CREATE OR REPLACE FUNCTION get_subclusters_hierarchy(p_root_cluster_id INT8)
 RETURNS TABLE (
@@ -112,4 +141,8 @@ $$ LANGUAGE plpgsql;
 
 SELECT * 
 FROM get_subclusters_hierarchy(2);
+
+
+
+
 
