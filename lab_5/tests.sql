@@ -17,7 +17,23 @@ select jsonb_agg(to_jsonb(planet) order by planet.planet_id) as all_planets
 from planet;
 
 --
-select jsonb_agg(
+/*
+select *
+from (
+(select jsonb_agg(to_jsonb(p) order by p.planet_id) as all
+from planet p)
+union all
+(select jsonb_agg(to_jsonb(sp) order by sp.spaceport_id) as all
+from spaceport sp)
+union all
+(select jsonb_agg(to_jsonb(per) order by per.spaceport_id) as all
+from person per)
+
+) as all;
+*/
+
+--
+select jsonb_pretty(jsonb_agg(
 	json_build_object(
 		'planet', p.name,
 		'atmosphere', p.atmosphere_type,
@@ -29,7 +45,7 @@ select jsonb_agg(
 			from spaceport sp 
 			where sp.planet_id = p.planet_id)
 	) order by p.name 
-) as galaxy_doc
+)) as galaxy_doc
 from planet p;
 
 -- 2
@@ -40,34 +56,15 @@ create table if not exists json_import (
     doc        jsonb       not null
 );
 
--- docker compose cp planet.Json Postgres_db:/tmp/planet.Json
-
-insert into json_import (file_name, doc) 
-values ('planet.Json', pg_read_file('/tmp/planet.Json')::jsonb);
-
-select id, file_name, jsonb_array_length(doc) as elements_count 
-from json_import 
-order by id desc limit 1;
-
-drop table if exists planet_copy;
-create table planet_copy (like planet including all);
-
+create table if not exists planet_copy (like planet including all);
 insert into planet_copy overriding system value
-select * 
-from jsonb_populate_recordset(
-    null::planet,
-    (select doc from json_import where file_name = 'planet.Json' order by id desc limit 1)
-);
+select * from jsonb_populate_recordset(null::planet, (select doc from json_import where file_name = 'planet.json' order by id desc limit 1));
 
-select setval(
-    pg_get_serial_sequence('planet_copy', 'planet_id'),
-    (select max(planet_id) from planet_copy)
-);
-
-(select * from planet      except select * from planet_copy)
+(select * from planet except select * from planet_copy)
 union all
 (select * from planet_copy except select * from planet);
 
+drop table planet_copy;
 
 -- 3
 drop table if exists space_probe;
@@ -186,7 +183,7 @@ select
     specs ?& array['status', 'power_source'] as has_required_keys
 from space_probe;
 
-select name 
+select * 
 from space_probe 
 where specs @> '{"status": "active"}';
 
@@ -198,7 +195,7 @@ set specs = jsonb_set(specs, '{power_source,output_w}', '500'::jsonb)
 where name = 'Вояджер-7';
 select probe_id, name, jsonb_pretty(specs) 
 from space_probe
-where name = 'Вояджер-7';;
+where name = 'Вояджер-7';
 rollback;
 
 
@@ -240,4 +237,4 @@ select
     p.key   as param_name,
     p.value as param_value
 from space_probe sp
-cross join lateral  jsonb_each(sp.specs -> 'power_source') as p;
+cross join jsonb_each(sp.specs -> 'power_source') as p;

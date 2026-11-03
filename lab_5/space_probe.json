@@ -1,0 +1,98 @@
+[
+    {
+        "name": "Вояджер-7",
+        "specs": {
+            "status": "active",
+            "telemetry": {
+                "signal_db": -92.4,
+                "frequency_ghz": 8.4
+            },
+            "autonomous": true,
+            "instruments": [
+                {
+                    "name": "спектрометр",
+                    "active": true,
+                    "mass_kg": 14.5
+                },
+                {
+                    "name": "магнитометр",
+                    "active": true,
+                    "mass_kg": 5.2
+                },
+                {
+                    "name": "камера высокого разрешения",
+                    "active": false,
+                    "mass_kg": 22.0
+                }
+            ],
+            "power_source": {
+                "type": "РИТЭГ",
+                "output_w": 475
+            }
+        },
+        "probe_id": 1,
+        "launch_year": 2024,
+        "target_body": "Юпитер"
+    },
+    {
+        "name": "Кеплер-X",
+        "specs": {
+            "status": "orbiting",
+            "certified": true,
+            "autonomous": false,
+            "instruments": [
+                {
+                    "name": "радар подповерхностного зондирования",
+                    "active": true,
+                    "mass_kg": 35.0
+                },
+                {
+                    "name": "газоанализатор",
+                    "active": true,
+                    "mass_kg": 8.1
+                }
+            ],
+            "power_source": {
+                "type": "солнечные панели",
+                "efficiency_pct": 32.5
+            },
+            "last_calibration": "2026-10-15"
+        },
+        "probe_id": 2,
+        "launch_year": 2025,
+        "target_body": "Марс"
+    },
+    {
+        "name": "Горизонт-3",
+        "specs": {
+            "status": "en_route",
+            "shields": {
+                "radiation": "lead-composite"
+            },
+            "telemetry": {
+                "signal_db": -110.8,
+                "frequency_ghz": 32.0
+            },
+            "autonomous": true,
+            "instruments": [
+                {
+                    "name": "атмосферный посадочный зонд",
+                    "active": false,
+                    "mass_kg": 80.0
+                },
+                {
+                    "name": "криогенный термодатчик",
+                    "active": true,
+                    "mass_kg": 1.2
+                }
+            ],
+            "power_source": {
+                "type": "термоядерный микрореактор",
+                "output_w": 1200
+            }
+        },
+        "probe_id": 3,
+        "launch_year": 2026,
+        "target_body": "Титан"
+    }
+]
